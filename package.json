@@ -1,6 +1,6 @@
 {
   "name": "vuexinette",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "Vuexinette a small lib for manage vuex crud operations",
   "main": "dist/index.js",
   "scripts": {
