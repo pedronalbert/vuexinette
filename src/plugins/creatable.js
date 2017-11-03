@@ -37,7 +37,7 @@ const buildActions = entity => ({
     commit(CREATE_START);
 
     try {
-      const { data } = await entity.api.create(formData);
+      const { data } = await entity.api.create({ data: formData });
 
       commit(CREATE_SUCCESS, { id: data.id });
     } catch (error) {

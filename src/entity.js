@@ -1,5 +1,5 @@
 import { schema } from 'normalizr';
-import { compact, defaults, isArray, each } from 'lodash';
+import { pick, compact, defaults, isArray, each } from 'lodash';
 import client from './client';
 
 const buildNormalizrSchema = (entityName, bareSchema = {}) => {
@@ -12,30 +12,42 @@ const buildNormalizrSchema = (entityName, bareSchema = {}) => {
   return new schema.Entity(entityName, objSchema);
 };
 
-const buildApi = url => ({
-  all: async params => client.request({ method: 'GET', url, params }),
+const FILLABLE_OPTS_KEYS = [
+  'url',
+  'params',
+  'data',
+  'baseURL',
+];
 
-  get: async (id, params = {}, config = {}) => client.request({
+const buildApi = url => ({
+  all: async (opts = {}) => client.request({
     method: 'GET',
-    url: compact([url, id, config.action]).join('/'),
-    params,
+    url,
+    ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
-  create: async data => client.request({
+  get: async (id, opts = {}) => client.request({
+    method: 'GET',
+    url: compact([url, id, opts.action]).join('/'),
+    ...pick(opts, FILLABLE_OPTS_KEYS),
+  }),
+
+  create: async (opts = {}) => client.request({
     method: 'POST',
     url,
-    data,
+    ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
-  update: async (id, data) => client.request({
+  update: async (id, opts = {}) => client.request({
     method: 'PUT',
     url: `${url}/${id}`,
-    data,
+    ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
-  delete: async id => client.request({
+  delete: async (id, opts = {}) => client.request({
     method: 'DELETE',
     url: `${url}/${id}`,
+    ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 });
 
@@ -43,7 +55,7 @@ export default function Entity(o) {
   if (!o.name) throw Error('You must specify a entity name');
 
   const opts = defaults(o, {
-    URL: `/${o.name}`,
+    url: `/${o.name}`,
   });
 
   const normalizrSchema = buildNormalizrSchema(opts.name, opts.schema);
@@ -51,7 +63,7 @@ export default function Entity(o) {
   return {
     ...opts,
     normalizrSchema,
-    api: buildApi(opts.url || `/${opts.name}`),
+    api: buildApi(opts.url),
   };
 }
 

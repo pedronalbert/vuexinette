@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf dist/*",
     "build": "npm run clean && babel src/ -d dist/",
+    "dev": "babel src/ -w dist/**/*.js -d dist/",
     "prepublish": "npm run build"
   },
   "author": "pedron.albert@gmail.com",

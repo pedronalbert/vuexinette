@@ -36,15 +36,16 @@ export const mutations = {
   },
 };
 
-const buildActions = (entity, opts) => ({
+const buildActions = (entity, opts = {}) => ({
   async fetch({ commit }, { id, params }) {
     if (!id) throw new Error('You need to pass an id');
 
     commit(FETCH_START);
 
     try {
-      const { data } = await entity.api.get(id, params, {
-        ...pick(opts, ['action']),
+      const { data } = await entity.api.get(id, {
+        params,
+        ...opts.requestOptions,
       });
 
       commit('entities/MERGE', {

@@ -1,4 +1,4 @@
-import { assign, defaults } from 'lodash';
+import { omit, assign, defaults } from 'lodash';
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -75,7 +75,7 @@ export const mutations = {
   },
 };
 
-const buildActions = entity => ({
+const buildActions = (entity, opts = {}) => ({
   async fetch({ commit, state }, params = {}) {
     const finalParams = defaults(params, {
       page: 1,
@@ -86,7 +86,10 @@ const buildActions = entity => ({
     commit(FETCH_START, { page: params.page });
 
     try {
-      const { data, pagination } = await entity.api.all(finalParams);
+      const { data, pagination } = await entity.api.all({
+        params: finalParams,
+        ...opts.requestOptions,
+      });
 
       commit('entities/MERGE', {
         name: entity.name,
@@ -149,7 +152,7 @@ export default (opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity),
+    actions: buildActions(opts.entity, omit(opts, ['entity'])),
     getters: buildGetters(opts.entity),
   };
 };
