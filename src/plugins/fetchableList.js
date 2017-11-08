@@ -34,7 +34,7 @@ export const mutations = {
     pagination = {
       page: 1,
       perPage: 1,
-      tota: 1,
+      total: 1,
     },
   }) {
     assign(state, {
