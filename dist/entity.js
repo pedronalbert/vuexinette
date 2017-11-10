@@ -34,9 +34,10 @@ const buildApi = buildOpts => ({
   get: (() => {
     var _ref2 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
-        method: 'GET',
-        url: compact([url, id, opts.action]).join('/')
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
+        method: 'GET'
+      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: compact([opts.url || buildOpts.url, id, opts.action]).join('/')
+      }));
     });
 
     return function get(_x) {
@@ -47,8 +48,7 @@ const buildApi = buildOpts => ({
   create: (() => {
     var _ref3 = _asyncToGenerator(function* (opts = {}) {
       return client.request(_extends({
-        method: 'POST',
-        url
+        method: 'POST'
       }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
     });
 
@@ -60,9 +60,10 @@ const buildApi = buildOpts => ({
   update: (() => {
     var _ref4 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
-        method: 'PUT',
-        url: `${url}/${id}`
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
+        method: 'PUT'
+      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: `${opts.url || buildOpts.url}/${id}`
+      }));
     });
 
     return function update(_x2) {
@@ -73,9 +74,10 @@ const buildApi = buildOpts => ({
   delete: (() => {
     var _ref5 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
-        method: 'DELETE',
-        url: `${url}/${id}`
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
+        method: 'DELETE'
+      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: `${buildOpts.url || opts.url}/${id}`
+      }));
     });
 
     return function _delete(_x3) {
