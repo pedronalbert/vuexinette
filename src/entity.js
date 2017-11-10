@@ -28,30 +28,29 @@ const buildApi = buildOpts => ({
 
   get: async (id, opts = {}) => client.request({
     method: 'GET',
-    url: compact([url, id, opts.action]).join('/'),
     ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
+    url: compact([opts.url || buildOpts.url, id, opts.action]).join('/'),
   }),
 
   create: async (opts = {}) => client.request({
     method: 'POST',
-    url,
     ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   update: async (id, opts = {}) => client.request({
     method: 'PUT',
-    url: `${url}/${id}`,
     ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
+    url: `${opts.url || buildOpts.url}/${id}`,
   }),
 
   delete: async (id, opts = {}) => client.request({
     method: 'DELETE',
-    url: `${url}/${id}`,
     ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
+    url: `${buildOpts.url || opts.url}/${id}`,
   }),
 });
 
