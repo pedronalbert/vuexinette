@@ -1,4 +1,4 @@
-import { assign } from 'lodash';
+import { omit, assign } from 'lodash';
 
 const CREATE_START = 'CREATE_START';
 const CREATE_SUCCESS = 'CREATE_SUCCESS';
@@ -32,12 +32,15 @@ export const mutations = {
   },
 };
 
-const buildActions = entity => ({
+const buildActions = (entity, opts = {}) => ({
   async create({ commit }, formData) {
     commit(CREATE_START);
 
     try {
-      const { data } = await entity.api.create({ data: formData });
+      const { data } = await entity.api.create({
+        ...opts.requestOptions,
+        data: formData,
+      });
 
       commit(CREATE_SUCCESS, { id: data.id });
     } catch (error) {
@@ -58,6 +61,6 @@ export default (opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity),
+    actions: buildActions(opts.entity, omit(opts, ['entity'])),
   };
 };

@@ -19,34 +19,38 @@ const FILLABLE_OPTS_KEYS = [
   'baseURL',
 ];
 
-const buildApi = url => ({
+const buildApi = buildOpts => ({
   all: async (opts = {}) => client.request({
     method: 'GET',
-    url,
+    ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   get: async (id, opts = {}) => client.request({
     method: 'GET',
     url: compact([url, id, opts.action]).join('/'),
+    ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   create: async (opts = {}) => client.request({
     method: 'POST',
     url,
+    ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   update: async (id, opts = {}) => client.request({
     method: 'PUT',
     url: `${url}/${id}`,
+    ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   delete: async (id, opts = {}) => client.request({
     method: 'DELETE',
     url: `${url}/${id}`,
+    ...buildOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 });
@@ -63,7 +67,7 @@ export default function Entity(o) {
   return {
     ...opts,
     normalizrSchema,
-    api: buildApi(opts.url),
+    api: buildApi(pick(opts, ['url', 'baseURL'])),
   };
 }
 
