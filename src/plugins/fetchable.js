@@ -1,4 +1,4 @@
-import { pick, assign, omit } from 'lodash';
+import { pick, assign } from 'lodash';
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -36,7 +36,7 @@ export const mutations = {
   },
 };
 
-const buildActions = (entity, opts = {}) => ({
+const buildActions = ({ entity, request: reqOpts }) => ({
   async fetch({ commit }, { id, params }) {
     if (!id) throw new Error('You need to pass an id');
 
@@ -45,7 +45,7 @@ const buildActions = (entity, opts = {}) => ({
     try {
       const { data } = await entity.api.get(id, {
         params,
-        ...opts.requestOptions,
+        ...reqOpts,
       });
 
       commit('entities/MERGE', {
@@ -68,7 +68,7 @@ const buildActions = (entity, opts = {}) => ({
   },
 });
 
-const buildGetters = entity => ({
+const buildGetters = ({ entity }) => ({
   data: (state, getters, rState, rGetters) => rGetters['entities/byId'](
     state.id,
     entity.name,
@@ -82,7 +82,7 @@ export default (opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity, omit(opts, ['entity'])),
-    getters: buildGetters(opts.entity),
+    actions: buildActions(opts),
+    getters: buildGetters(opts),
   };
 };

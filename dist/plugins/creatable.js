@@ -2,7 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-import { omit, assign } from 'lodash';
+import { assign } from 'lodash';
 
 const CREATE_START = 'CREATE_START';
 const CREATE_SUCCESS = 'CREATE_SUCCESS';
@@ -36,13 +36,13 @@ export const mutations = {
   }
 };
 
-const buildActions = (entity, opts = {}) => ({
+const buildActions = ({ entity, request: reqOpts }) => ({
   create({ commit }, formData) {
     return _asyncToGenerator(function* () {
       commit(CREATE_START);
 
       try {
-        const { data } = yield entity.api.create(_extends({}, opts.requestOptions, {
+        const { data } = yield entity.api.create(_extends({}, reqOpts, {
           data: formData
         }));
 
@@ -66,6 +66,6 @@ export default ((opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity, omit(opts, ['entity']))
+    actions: buildActions(opts)
   };
 });

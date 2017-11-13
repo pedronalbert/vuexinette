@@ -18,12 +18,12 @@ const buildNormalizrSchema = (entityName, bareSchema = {}) => {
 
 const FILLABLE_OPTS_KEYS = ['url', 'params', 'data', 'baseURL'];
 
-const buildApi = buildOpts => ({
+const buildApi = clientOpts => ({
   all: (() => {
     var _ref = _asyncToGenerator(function* (opts = {}) {
       return client.request(_extends({
         method: 'GET'
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
+      }, clientOpts, pick(opts, FILLABLE_OPTS_KEYS)));
     });
 
     return function all() {
@@ -35,8 +35,8 @@ const buildApi = buildOpts => ({
     var _ref2 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
         method: 'GET'
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
-        url: compact([opts.url || buildOpts.url, id, opts.action]).join('/')
+      }, clientOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: compact([opts.url || clientOpts.url, id, opts.action]).join('/')
       }));
     });
 
@@ -49,7 +49,7 @@ const buildApi = buildOpts => ({
     var _ref3 = _asyncToGenerator(function* (opts = {}) {
       return client.request(_extends({
         method: 'POST'
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS)));
+      }, clientOpts, pick(opts, FILLABLE_OPTS_KEYS)));
     });
 
     return function create() {
@@ -61,8 +61,8 @@ const buildApi = buildOpts => ({
     var _ref4 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
         method: 'PUT'
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
-        url: `${opts.url || buildOpts.url}/${id}`
+      }, clientOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: `${opts.url || clientOpts.url}/${id}`
       }));
     });
 
@@ -75,8 +75,8 @@ const buildApi = buildOpts => ({
     var _ref5 = _asyncToGenerator(function* (id, opts = {}) {
       return client.request(_extends({
         method: 'DELETE'
-      }, buildOpts, pick(opts, FILLABLE_OPTS_KEYS), {
-        url: `${buildOpts.url || opts.url}/${id}`
+      }, clientOpts, pick(opts, FILLABLE_OPTS_KEYS), {
+        url: `${clientOpts.url || opts.url}/${id}`
       }));
     });
 
@@ -97,6 +97,6 @@ export default function Entity(o) {
 
   return _extends({}, opts, {
     normalizrSchema,
-    api: buildApi(pick(opts, ['url', 'baseURL']))
+    api: buildApi(opts.client)
   });
 }
