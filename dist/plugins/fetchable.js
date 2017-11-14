@@ -2,7 +2,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-import { pick, assign, omit } from 'lodash';
+import { pick, assign } from 'lodash';
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -40,7 +40,7 @@ export const mutations = {
   }
 };
 
-const buildActions = (entity, opts = {}) => ({
+const buildActions = ({ entity, request: reqOpts }) => ({
   fetch({ commit }, { id, params }) {
     return _asyncToGenerator(function* () {
       if (!id) throw new Error('You need to pass an id');
@@ -50,7 +50,7 @@ const buildActions = (entity, opts = {}) => ({
       try {
         const { data } = yield entity.api.get(id, _extends({
           params
-        }, opts.requestOptions));
+        }, reqOpts));
 
         commit('entities/MERGE', {
           name: entity.name,
@@ -73,7 +73,7 @@ const buildActions = (entity, opts = {}) => ({
   }
 });
 
-const buildGetters = entity => ({
+const buildGetters = ({ entity }) => ({
   data: (state, getters, rState, rGetters) => rGetters['entities/byId'](state.id, entity.name, entity.normalizrSchema)
 });
 
@@ -83,7 +83,7 @@ export default ((opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity, omit(opts, ['entity'])),
-    getters: buildGetters(opts.entity)
+    actions: buildActions(opts),
+    getters: buildGetters(opts)
   };
 });

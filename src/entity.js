@@ -19,38 +19,38 @@ const FILLABLE_OPTS_KEYS = [
   'baseURL',
 ];
 
-const buildApi = buildOpts => ({
+const buildApi = (clientOpts) => ({
   all: async (opts = {}) => client.request({
     method: 'GET',
-    ...buildOpts,
+    ...clientOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   get: async (id, opts = {}) => client.request({
     method: 'GET',
-    ...buildOpts,
+    ...clientOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
-    url: compact([opts.url || buildOpts.url, id, opts.action]).join('/'),
+    url: compact([opts.url || clientOpts.url, id, opts.action]).join('/'),
   }),
 
   create: async (opts = {}) => client.request({
     method: 'POST',
-    ...buildOpts,
+    ...clientOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
   }),
 
   update: async (id, opts = {}) => client.request({
     method: 'PUT',
-    ...buildOpts,
+    ...clientOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
-    url: `${opts.url || buildOpts.url}/${id}`,
+    url: `${opts.url || clientOpts.url}/${id}`,
   }),
 
   delete: async (id, opts = {}) => client.request({
     method: 'DELETE',
-    ...buildOpts,
+    ...clientOpts,
     ...pick(opts, FILLABLE_OPTS_KEYS),
-    url: `${buildOpts.url || opts.url}/${id}`,
+    url: `${clientOpts.url || opts.url}/${id}`,
   }),
 });
 
@@ -66,7 +66,7 @@ export default function Entity(o) {
   return {
     ...opts,
     normalizrSchema,
-    api: buildApi(pick(opts, ['url', 'baseURL'])),
+    api: buildApi(opts.client),
   };
 }
 

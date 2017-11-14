@@ -4,7 +4,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-import { omit, assign, defaults } from 'lodash';
+import { assign, defaults } from 'lodash';
 
 const FETCH_START = 'FETCH_START';
 const FETCH_SUCCESS = 'FETCH_SUCCESS';
@@ -78,7 +78,7 @@ const mutations = {
 };
 
 export { mutations };
-const buildActions = (entity, opts = {}) => ({
+const buildActions = ({ entity, request: reqOpts }) => ({
   fetch({ commit, state }, params = {}) {
     return _asyncToGenerator(function* () {
       const finalParams = defaults(params, _extends({
@@ -91,7 +91,7 @@ const buildActions = (entity, opts = {}) => ({
       try {
         const { data, pagination } = yield entity.api.all(_extends({
           params: finalParams
-        }, opts.requestOptions));
+        }, reqOpts));
 
         commit('entities/MERGE', {
           name: entity.name,
@@ -137,7 +137,7 @@ const buildActions = (entity, opts = {}) => ({
   }
 });
 
-const buildGetters = entity => ({
+const buildGetters = ({ entity }) => ({
   all: (state, getters, rState, rGetters) => rGetters['entities/byIds'](state.ids, entity.name, entity.normalizrSchema),
 
   currentPage: ({ pagination: { page } }) => page,
@@ -153,7 +153,7 @@ export default ((opts = {}) => {
   return {
     state: initState,
     mutations,
-    actions: buildActions(opts.entity, omit(opts, ['entity'])),
-    getters: buildGetters(opts.entity)
+    actions: buildActions(opts),
+    getters: buildGetters(opts)
   };
 });
