@@ -1,17 +1,17 @@
 import { get, merge } from 'lodash';
 
 export default (module, plugin, opts = {}) => {
-  const attrs = plugin(opts);
+  const pluginModule = plugin(opts);
 
   merge(module, {
-    state: get(attrs, 'state', {}),
-    mutations: get(attrs, 'mutations', {}),
+    state: get(pluginModule, 'state', {}),
+    mutations: get(pluginModule, 'mutations', {}),
     actions: {
-      ...get(attrs, 'actions', {}),
+      ...get(pluginModule, 'actions', {}),
       ...module.actions,
     },
     getters: {
-      ...get(attrs, 'getters', {}),
+      ...get(pluginModule, 'getters', {}),
       ...module.getters,
     },
   });

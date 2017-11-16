@@ -68,7 +68,7 @@ Permite obtener datos de una entity en su ruta base y paginar
 ```js
 Vuexinette.installPlugin(module, fetchableList, {
   entity: !Entity, // entity usada en el modulo,
-  client: {
+  request: {
     // Opciones para realizar el fetch (axios)
   },
 });
@@ -94,7 +94,7 @@ Vuexinette.installPlugin(module, fetchableList, {
 
 #### actions
 ```js
-async fetch(params Object) // Realiza el fetch con los parametros enviados
+async fetch(params Object) // Realiza el fetch
 async fetchNextPage(params Object) // Realiza el fetch de la siguiente página
 addFilter(filter Object) // Agrega uno o varios filtros usando la key y valor especificados
 clearFilters() // Limpia todo los filtros
@@ -102,8 +102,69 @@ clearFilters() // Limpia todo los filtros
 
 #### getters
 ```js
-all Object[] // Lista de entities
+all Object[] // Lista de entities _desnormalizadas_
 currentPage Integer // Página actual
 pagesCount Integer // Cantidad de paginas
 hasMorePages Boolean // Indica si hay mas páginas
+```
+
+### fetchable
+Permite obtener datos de una entity en su ruta show **/clients/:id**
+
+#### install
+```js
+Vuexinette.installPlugin(module, fetchableList, {
+  entity: !Entity, // entity usada en el modulo,
+  request: {
+    // Opciones para realizar el fetch (axios)
+  },
+});
+```
+
+#### state
+
+```js
+{
+  isFetching: Boolean, // Indica si hay un request en proceso
+  fetchError: Error, // Error del ultimo request
+  id: Integer, // Id del entity
+  lastFetch: String, // DateTime del ultimo fetch
+}
+```
+
+#### actions
+```js
+async fetch({ id, params }) // Realiza el fetch
+```
+
+#### getters
+```js
+data Object // Data _desnormalizada_ de la entity
+```
+
+### creatable
+Permite realizar las creación de nuevas entities aka POST
+
+#### install
+```js
+Vuexinette.installPlugin(module, fetchableList, {
+  entity: !Entity, // entity usada en el modulo,
+  request: {
+    // Opciones para realizar el fetch (axios)
+  },
+});
+```
+
+#### state
+
+```js
+{
+  isCreating: Boolean, // Indica si hay un request en proceso
+  createError: Error, // Error del ultimo request
+}
+```
+
+#### actions
+```js
+async create(formData) // Ejecutar el POST
 ```

@@ -1,19 +1,32 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.mutations = undefined;
+
+var _mutations;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _lodash = require('lodash');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-import { assign, defaults } from 'lodash';
+var FETCH_START = 'FETCH_START';
+var FETCH_SUCCESS = 'FETCH_SUCCESS';
+var FETCH_FAILED = 'FETCH_FAILED';
+var ADD_FILTER = 'ADD_FILTER';
+var CLEAR_FILTERS = 'CLEAR_FILTERS';
+var MERGE_FILTERS = 'MERGE_FILTERS';
 
-const FETCH_START = 'FETCH_START';
-const FETCH_SUCCESS = 'FETCH_SUCCESS';
-const FETCH_FAILED = 'FETCH_FAILED';
-const ADD_FILTER = 'ADD_FILTER';
-const CLEAR_FILTERS = 'CLEAR_FILTERS';
-const MERGE_FILTERS = 'MERGE_FILTERS';
-
-const initState = {
+var initState = {
   isFetching: false,
   fetchError: null,
   ids: [],
@@ -25,135 +38,213 @@ const initState = {
   filters: {}
 };
 
-const mutations = {
-  [FETCH_START](state, _ref = {}) {
-    let { page = 1 } = _ref,
-        meta = {} = _objectWithoutProperties(_ref, ['page']);
+var mutations = (_mutations = {}, _defineProperty(_mutations, FETCH_START, function (state) {
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+      _ref$page = _ref.page,
+      page = _ref$page === undefined ? 1 : _ref$page,
+      _objectWithoutPropert = _objectWithoutProperties(_ref, ['page']),
+      _objectWithoutPropert2 = _objectWithoutPropert,
+      meta = _objectWithoutPropert2 === undefined ? {} : _objectWithoutPropert2;
 
-    assign(state, _extends({
-      isFetching: true,
-      fetchError: null,
-      ids: page !== 1 ? state.ids : []
-    }, meta));
-  },
+  (0, _lodash.assign)(state, _extends({
+    isFetching: true,
+    fetchError: null,
+    ids: page !== 1 ? state.ids : []
+  }, meta));
+}), _defineProperty(_mutations, FETCH_SUCCESS, function (state, _ref2) {
+  var ids = _ref2.ids,
+      _ref2$pagination = _ref2.pagination,
+      pagination = _ref2$pagination === undefined ? {
+    page: 1,
+    perPage: 1,
+    total: 1
+  } : _ref2$pagination;
 
-  [FETCH_SUCCESS](state, {
-    ids,
-    pagination = {
-      page: 1,
-      perPage: 1,
-      total: 1
-    }
-  }) {
-    assign(state, {
-      isFetching: false,
-      fetchError: null,
-      ids: [...state.ids, ...ids],
-      pagination
-    });
-  },
+  (0, _lodash.assign)(state, {
+    isFetching: false,
+    fetchError: null,
+    ids: [].concat(_toConsumableArray(state.ids), _toConsumableArray(ids)),
+    pagination: pagination
+  });
+}), _defineProperty(_mutations, FETCH_FAILED, function (state, _ref3) {
+  var error = _ref3.error;
 
-  [FETCH_FAILED](state, { error }) {
-    assign(state, {
-      isFetching: false,
-      fetchError: error
-    });
-  },
+  (0, _lodash.assign)(state, {
+    isFetching: false,
+    fetchError: error
+  });
+}), _defineProperty(_mutations, ADD_FILTER, function (state, filter) {
+  (0, _lodash.assign)(state, {
+    filters: _extends({}, state.filters, filter)
+  });
+}), _defineProperty(_mutations, CLEAR_FILTERS, function (state) {
+  (0, _lodash.assign)(state, { filters: {} });
+}), _defineProperty(_mutations, MERGE_FILTERS, function (state, filters) {
+  (0, _lodash.assign)(state, {
+    filters: _extends({}, state.filters, filters)
+  });
+}), _mutations);
 
-  [ADD_FILTER](state, filter) {
-    assign(state, {
-      filters: _extends({}, state.filters, filter)
-    });
-  },
+exports.mutations = mutations;
+var buildActions = function buildActions(_ref4) {
+  var entity = _ref4.entity,
+      reqOpts = _ref4.request;
+  return {
+    fetch: function () {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref5) {
+        var commit = _ref5.commit,
+            state = _ref5.state;
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  [CLEAR_FILTERS](state) {
-    assign(state, { filters: {} });
-  },
+        var finalParams, _ref7, data, pagination;
 
-  [MERGE_FILTERS](state, filters) {
-    assign(state, {
-      filters: _extends({}, state.filters, filters)
-    });
-  }
-};
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                finalParams = (0, _lodash.defaults)(params, _extends({
+                  page: 1,
+                  perPage: 15
+                }, state.filters));
 
-export { mutations };
-const buildActions = ({ entity, request: reqOpts }) => ({
-  fetch({ commit, state }, params = {}) {
-    return _asyncToGenerator(function* () {
-      const finalParams = defaults(params, _extends({
-        page: 1,
-        perPage: 15
-      }, state.filters));
 
-      commit(FETCH_START, { page: params.page });
+                commit(FETCH_START, { page: params.page });
 
-      try {
-        const { data, pagination } = yield entity.api.all(_extends({
-          params: finalParams
-        }, reqOpts));
+                _context.prev = 2;
+                _context.next = 5;
+                return entity.api.all(_extends({
+                  params: finalParams
+                }, reqOpts));
 
-        commit('entities/MERGE', {
-          name: entity.name,
-          schema: entity.normalizrSchema,
-          data
-        }, { root: true });
+              case 5:
+                _ref7 = _context.sent;
+                data = _ref7.data;
+                pagination = _ref7.pagination;
 
-        commit(FETCH_SUCCESS, {
-          ids: data.map(function (body) {
-            return body.id;
-          }),
-          pagination
-        });
-      } catch (error) {
-        console.error(error); // eslint-disable-line
-        commit(FETCH_FAILED, { error });
 
-        return Promise.reject(error);
+                commit('entities/MERGE', {
+                  name: entity.name,
+                  schema: entity.normalizrSchema,
+                  data: data
+                }, { root: true });
+
+                commit(FETCH_SUCCESS, {
+                  ids: data.map(function (body) {
+                    return body.id;
+                  }),
+                  pagination: pagination
+                });
+                _context.next = 17;
+                break;
+
+              case 12:
+                _context.prev = 12;
+                _context.t0 = _context['catch'](2);
+
+                console.error(_context.t0); // eslint-disable-line
+                commit(FETCH_FAILED, { error: _context.t0 });
+
+                return _context.abrupt('return', Promise.reject(_context.t0));
+
+              case 17:
+                return _context.abrupt('return', Promise.resolve());
+
+              case 18:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[2, 12]]);
+      }));
+
+      function fetch(_x3) {
+        return _ref6.apply(this, arguments);
       }
 
-      return Promise.resolve();
-    })();
-  },
+      return fetch;
+    }(),
+    fetchNextPage: function () {
+      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref8) {
+        var state = _ref8.state,
+            dispatch = _ref8.dispatch;
+        var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return dispatch('fetch', _extends({}, params, {
+                  page: state.pagination.page + 1
+                }));
 
-  fetchNextPage({ state, dispatch }, params = {}) {
-    return _asyncToGenerator(function* () {
-      yield dispatch('fetch', _extends({}, params, {
-        page: state.pagination.page + 1
+              case 2:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
       }));
-    })();
-  },
 
-  addFilter({ commit }, filter) {
-    commit(ADD_FILTER, filter);
-  },
+      function fetchNextPage(_x5) {
+        return _ref9.apply(this, arguments);
+      }
 
-  clearFilters({ commit }) {
-    commit(CLEAR_FILTERS);
-  },
+      return fetchNextPage;
+    }(),
+    addFilter: function addFilter(_ref10, filter) {
+      var commit = _ref10.commit;
 
-  mergeFilters({ commit }, filters) {
-    commit(MERGE_FILTERS, filters);
-  }
-});
+      commit(ADD_FILTER, filter);
+    },
+    clearFilters: function clearFilters(_ref11) {
+      var commit = _ref11.commit;
 
-const buildGetters = ({ entity }) => ({
-  all: (state, getters, rState, rGetters) => rGetters['entities/byIds'](state.ids, entity.name, entity.normalizrSchema),
+      commit(CLEAR_FILTERS);
+    },
+    mergeFilters: function mergeFilters(_ref12, filters) {
+      var commit = _ref12.commit;
 
-  currentPage: ({ pagination: { page } }) => page,
+      commit(MERGE_FILTERS, filters);
+    }
+  };
+};
 
-  pagesCount: ({ pagination: { perPage, total } }) => perPage > 0 ? Math.ceil(total / perPage) : 1, // eslint-disable-line
+var buildGetters = function buildGetters(_ref13) {
+  var entity = _ref13.entity;
+  return {
+    all: function all(state, getters, rState, rGetters) {
+      return rGetters['entities/byIds'](state.ids, entity.name, entity.normalizrSchema);
+    },
 
-  hasMorePages: (state, { currentPage, pagesCount }) => currentPage >= 1 && currentPage < pagesCount
-});
+    currentPage: function currentPage(_ref14) {
+      var page = _ref14.pagination.page;
+      return page;
+    },
 
-export default ((opts = {}) => {
+    pagesCount: function pagesCount(_ref15) {
+      var _ref15$pagination = _ref15.pagination,
+          perPage = _ref15$pagination.perPage,
+          total = _ref15$pagination.total;
+      return perPage > 0 ? Math.ceil(total / perPage) : 1;
+    }, // eslint-disable-line
+
+    hasMorePages: function hasMorePages(state, _ref16) {
+      var currentPage = _ref16.currentPage,
+          pagesCount = _ref16.pagesCount;
+      return currentPage >= 1 && currentPage < pagesCount;
+    }
+  };
+};
+
+exports.default = function () {
+  var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
   if (!opts.entity) throw new Error('You have to specify an Entity');
 
   return {
     state: initState,
-    mutations,
+    mutations: mutations,
     actions: buildActions(opts),
     getters: buildGetters(opts)
   };
-});
+};

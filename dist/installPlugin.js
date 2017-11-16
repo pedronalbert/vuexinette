@@ -1,14 +1,22 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { get, merge } from 'lodash';
+var _lodash = require('lodash');
 
-export default ((module, plugin, opts = {}) => {
-  const attrs = plugin(opts);
+exports.default = function (module, plugin) {
+  var opts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-  merge(module, {
-    state: get(attrs, 'state', {}),
-    mutations: get(attrs, 'mutations', {}),
-    actions: _extends({}, get(attrs, 'actions', {}), module.actions),
-    getters: _extends({}, get(attrs, 'getters', {}), module.getters)
+  var pluginModule = plugin(opts);
+
+  (0, _lodash.merge)(module, {
+    state: (0, _lodash.get)(pluginModule, 'state', {}),
+    mutations: (0, _lodash.get)(pluginModule, 'mutations', {}),
+    actions: _extends({}, (0, _lodash.get)(pluginModule, 'actions', {}), module.actions),
+    getters: _extends({}, (0, _lodash.get)(pluginModule, 'getters', {}), module.getters)
   });
-});
+};
