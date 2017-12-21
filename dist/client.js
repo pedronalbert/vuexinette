@@ -37,7 +37,7 @@ var parsePaginationHeaders = function parsePaginationHeaders(headers) {
 };
 
 var responseErrorInterceptor = function responseErrorInterceptor(err) {
-  var rejectError = new _exceptions.RequestError('Request Error', null);
+  var rejectError = new _exceptions.RequestError('RequestError: ' + err.message, null);
 
   if (err.response) {
     var _err$response = err.response,
