@@ -23,7 +23,7 @@ const parsePaginationHeaders = headers => ({
 });
 
 const responseErrorInterceptor = (err) => {
-  let rejectError = new RequestError('Request Error', null);
+  let rejectError = new RequestError(`RequestError: ${err.message}`, null);
 
   if (err.response) {
     const { status, data } = err.response;
