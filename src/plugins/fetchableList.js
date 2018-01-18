@@ -6,6 +6,8 @@ const FETCH_FAILED = 'FETCH_FAILED';
 const ADD_FILTER = 'ADD_FILTER';
 const CLEAR_FILTERS = 'CLEAR_FILTERS';
 const MERGE_FILTERS = 'MERGE_FILTERS';
+export const APPEND_ID = 'APPEND_ID';
+export const PREPEND_ID = 'PREPEND_ID';
 
 const initState = {
   isFetching: false,
@@ -59,6 +61,14 @@ export const mutations = {
         ...filter,
       },
     });
+  },
+
+  [PREPEND_ID](state, { id }) {
+    state.ids.unshift(id);
+  },
+
+  [APPEND_ID](state, { id }) {
+    state.ids.push(id);
   },
 
   [CLEAR_FILTERS](state) {

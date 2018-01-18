@@ -1,33 +1,33 @@
 import { assign } from 'lodash';
 
-export const CREATE_START = 'CREATE_START';
-export const CREATE_SUCCESS = 'CREATE_SUCCESS';
-export const CREATE_FAILED = 'CREATE_FAILED';
+export const UPDATE_START = 'CREATE_START';
+export const UPDATE_SUCCESS = 'CREATE_SUCCESS';
+export const UPDATE_FAILED = 'CREATE_FAILED';
 
 const initState = {
-  isCreating: false,
-  createError: null,
+  isUpdating: false,
+  updateError: null,
 };
 
 export const mutations = {
-  [CREATE_START](state) {
+  [UPDATE_START](state) {
     assign(state, {
-      isCreating: true,
-      createError: null,
+      isUpdating: true,
+      updateError: null,
     });
   },
 
-  [CREATE_SUCCESS](state) {
+  [UPDATE_SUCCESS](state) {
     assign(state, {
-      isCreating: false,
-      createError: null,
+      isUpdating: false,
+      updateError: null,
     });
   },
 
-  [CREATE_FAILED](state, { error }) {
+  [UPDATE_FAILED](state, { error }) {
     assign(state, {
-      isCreating: false,
-      createError: error,
+      isUpdating: false,
+      updateError: error,
     });
   },
 };
@@ -35,30 +35,30 @@ export const mutations = {
 const buildActions = ({
   entity,
   request: reqOpts,
-  afterCreate,
+  afterUpdate,
 }) => ({
-  async create(store, formData) {
-    store.commit(CREATE_START);
+  async update(store, { id, data }) {
+    store.commit(UPDATE_START);
 
     try {
-      const { data } = await entity.api.create({
+      const response = await entity.api.update(id, {
         ...reqOpts,
-        data: formData,
+        data,
       });
 
       store.commit('entities/MERGE', {
         name: entity.name,
         schema: entity.normalizrSchema,
-        data,
+        data: response.data,
       }, { root: true });
 
-      store.commit(CREATE_SUCCESS);
+      store.commit(UPDATE_SUCCESS);
 
-      if (afterCreate) afterCreate(store, { data });
+      if (afterUpdate) afterUpdate(store, { data: response.data, entity });
     } catch (error) {
       console.error(error); // eslint-disable-line
 
-      store.commit(CREATE_FAILED, { error });
+      store.commit(UPDATE_FAILED, { error });
 
       return Promise.reject(error);
     }

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.mutations = exports.CREATE_FAILED = exports.CREATE_SUCCESS = exports.CREATE_START = undefined;
+exports.mutations = exports.UPDATE_FAILED = exports.UPDATE_SUCCESS = exports.UPDATE_START = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -15,98 +15,98 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var CREATE_START = exports.CREATE_START = 'CREATE_START';
-var CREATE_SUCCESS = exports.CREATE_SUCCESS = 'CREATE_SUCCESS';
-var CREATE_FAILED = exports.CREATE_FAILED = 'CREATE_FAILED';
+var UPDATE_START = exports.UPDATE_START = 'CREATE_START';
+var UPDATE_SUCCESS = exports.UPDATE_SUCCESS = 'CREATE_SUCCESS';
+var UPDATE_FAILED = exports.UPDATE_FAILED = 'CREATE_FAILED';
 
 var initState = {
-  isCreating: false,
-  createError: null
+  isUpdating: false,
+  updateError: null
 };
 
-var mutations = exports.mutations = (_mutations = {}, _defineProperty(_mutations, CREATE_START, function (state) {
+var mutations = exports.mutations = (_mutations = {}, _defineProperty(_mutations, UPDATE_START, function (state) {
   (0, _lodash.assign)(state, {
-    isCreating: true,
-    createError: null
+    isUpdating: true,
+    updateError: null
   });
-}), _defineProperty(_mutations, CREATE_SUCCESS, function (state) {
+}), _defineProperty(_mutations, UPDATE_SUCCESS, function (state) {
   (0, _lodash.assign)(state, {
-    isCreating: false,
-    createError: null
+    isUpdating: false,
+    updateError: null
   });
-}), _defineProperty(_mutations, CREATE_FAILED, function (state, _ref) {
+}), _defineProperty(_mutations, UPDATE_FAILED, function (state, _ref) {
   var error = _ref.error;
 
   (0, _lodash.assign)(state, {
-    isCreating: false,
-    createError: error
+    isUpdating: false,
+    updateError: error
   });
 }), _mutations);
 
 var buildActions = function buildActions(_ref2) {
   var entity = _ref2.entity,
       reqOpts = _ref2.request,
-      afterCreate = _ref2.afterCreate;
+      afterUpdate = _ref2.afterUpdate;
   return {
-    create: function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store, formData) {
-        var _ref4, data;
-
+    update: function () {
+      var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store, _ref3) {
+        var id = _ref3.id,
+            data = _ref3.data;
+        var response;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                store.commit(CREATE_START);
+                store.commit(UPDATE_START);
 
                 _context.prev = 1;
                 _context.next = 4;
-                return entity.api.create(_extends({}, reqOpts, {
-                  data: formData
+                return entity.api.update(id, _extends({}, reqOpts, {
+                  data: data
                 }));
 
               case 4:
-                _ref4 = _context.sent;
-                data = _ref4.data;
+                response = _context.sent;
 
 
                 store.commit('entities/MERGE', {
                   name: entity.name,
                   schema: entity.normalizrSchema,
-                  data: data
+                  data: response.data
                 }, { root: true });
 
-                store.commit(CREATE_SUCCESS);
+                store.commit(UPDATE_SUCCESS);
 
-                if (afterCreate) afterCreate(store, { data: data });
-                _context.next = 16;
+                if (afterUpdate) afterUpdate(store, { data: response.data, entity: entity });
+                _context.next = 15;
                 break;
 
-              case 11:
-                _context.prev = 11;
+              case 10:
+                _context.prev = 10;
                 _context.t0 = _context['catch'](1);
 
                 console.error(_context.t0); // eslint-disable-line
 
-                store.commit(CREATE_FAILED, { error: _context.t0 });
+                store.commit(UPDATE_FAILED, { error: _context.t0 });
 
                 return _context.abrupt('return', Promise.reject(_context.t0));
 
-              case 16:
+              case 15:
                 return _context.abrupt('return', Promise.resolve());
 
-              case 17:
+              case 16:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, this, [[1, 11]]);
+        }, _callee, this, [[1, 10]]);
       }));
 
-      function create(_x, _x2) {
-        return _ref3.apply(this, arguments);
+      function update(_x, _x2) {
+        return _ref4.apply(this, arguments);
       }
 
-      return create;
+      return update;
     }()
   };
 };

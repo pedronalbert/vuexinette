@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.mutations = undefined;
+exports.mutations = exports.PREPEND_ID = exports.APPEND_ID = undefined;
 
 var _mutations;
 
@@ -25,6 +25,8 @@ var FETCH_FAILED = 'FETCH_FAILED';
 var ADD_FILTER = 'ADD_FILTER';
 var CLEAR_FILTERS = 'CLEAR_FILTERS';
 var MERGE_FILTERS = 'MERGE_FILTERS';
+var APPEND_ID = exports.APPEND_ID = 'APPEND_ID';
+var PREPEND_ID = exports.PREPEND_ID = 'PREPEND_ID';
 
 var initState = {
   isFetching: false,
@@ -77,6 +79,14 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, FETCH_START, funct
   (0, _lodash.assign)(state, {
     filters: _extends({}, state.filters, filter)
   });
+}), _defineProperty(_mutations, PREPEND_ID, function (state, _ref4) {
+  var id = _ref4.id;
+
+  state.ids.unshift(id);
+}), _defineProperty(_mutations, APPEND_ID, function (state, _ref5) {
+  var id = _ref5.id;
+
+  state.ids.push(id);
 }), _defineProperty(_mutations, CLEAR_FILTERS, function (state) {
   (0, _lodash.assign)(state, { filters: {} });
 }), _defineProperty(_mutations, MERGE_FILTERS, function (state, filters) {
@@ -86,17 +96,17 @@ var mutations = (_mutations = {}, _defineProperty(_mutations, FETCH_START, funct
 }), _mutations);
 
 exports.mutations = mutations;
-var buildActions = function buildActions(_ref4) {
-  var entity = _ref4.entity,
-      reqOpts = _ref4.request;
+var buildActions = function buildActions(_ref6) {
+  var entity = _ref6.entity,
+      reqOpts = _ref6.request;
   return {
     fetch: function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref5) {
-        var commit = _ref5.commit,
-            state = _ref5.state;
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref7) {
+        var commit = _ref7.commit,
+            state = _ref7.state;
         var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-        var finalParams, _ref7, data, pagination;
+        var finalParams, _ref9, data, pagination;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -117,9 +127,9 @@ var buildActions = function buildActions(_ref4) {
                 }, reqOpts));
 
               case 5:
-                _ref7 = _context.sent;
-                data = _ref7.data;
-                pagination = _ref7.pagination;
+                _ref9 = _context.sent;
+                data = _ref9.data;
+                pagination = _ref9.pagination;
 
 
                 commit('entities/MERGE', {
@@ -158,15 +168,15 @@ var buildActions = function buildActions(_ref4) {
       }));
 
       function fetch(_x3) {
-        return _ref6.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       }
 
       return fetch;
     }(),
     fetchNextPage: function () {
-      var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref8) {
-        var state = _ref8.state,
-            dispatch = _ref8.dispatch;
+      var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref10) {
+        var state = _ref10.state,
+            dispatch = _ref10.dispatch;
         var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
@@ -186,51 +196,51 @@ var buildActions = function buildActions(_ref4) {
       }));
 
       function fetchNextPage(_x5) {
-        return _ref9.apply(this, arguments);
+        return _ref11.apply(this, arguments);
       }
 
       return fetchNextPage;
     }(),
-    addFilter: function addFilter(_ref10, filter) {
-      var commit = _ref10.commit;
+    addFilter: function addFilter(_ref12, filter) {
+      var commit = _ref12.commit;
 
       commit(ADD_FILTER, filter);
     },
-    clearFilters: function clearFilters(_ref11) {
-      var commit = _ref11.commit;
+    clearFilters: function clearFilters(_ref13) {
+      var commit = _ref13.commit;
 
       commit(CLEAR_FILTERS);
     },
-    mergeFilters: function mergeFilters(_ref12, filters) {
-      var commit = _ref12.commit;
+    mergeFilters: function mergeFilters(_ref14, filters) {
+      var commit = _ref14.commit;
 
       commit(MERGE_FILTERS, filters);
     }
   };
 };
 
-var buildGetters = function buildGetters(_ref13) {
-  var entity = _ref13.entity;
+var buildGetters = function buildGetters(_ref15) {
+  var entity = _ref15.entity;
   return {
     all: function all(state, getters, rState, rGetters) {
       return rGetters['entities/byIds'](state.ids, entity.name, entity.normalizrSchema);
     },
 
-    currentPage: function currentPage(_ref14) {
-      var page = _ref14.pagination.page;
+    currentPage: function currentPage(_ref16) {
+      var page = _ref16.pagination.page;
       return page;
     },
 
-    pagesCount: function pagesCount(_ref15) {
-      var _ref15$pagination = _ref15.pagination,
-          perPage = _ref15$pagination.perPage,
-          total = _ref15$pagination.total;
+    pagesCount: function pagesCount(_ref17) {
+      var _ref17$pagination = _ref17.pagination,
+          perPage = _ref17$pagination.perPage,
+          total = _ref17$pagination.total;
       return perPage > 0 ? Math.ceil(total / perPage) : 1;
     }, // eslint-disable-line
 
-    hasMorePages: function hasMorePages(state, _ref16) {
-      var currentPage = _ref16.currentPage,
-          pagesCount = _ref16.pagesCount;
+    hasMorePages: function hasMorePages(state, _ref18) {
+      var currentPage = _ref18.currentPage,
+          pagesCount = _ref18.pagesCount;
       return currentPage >= 1 && currentPage < pagesCount;
     }
   };

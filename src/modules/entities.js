@@ -1,4 +1,5 @@
-import { isArray, defaultsDeep, assign } from 'lodash';
+import Vue from 'vue';
+import { get, isArray, defaultsDeep, assign, each } from 'lodash';
 import { denormalize, normalize } from 'normalizr';
 
 export const MERGE = 'MERGE';
@@ -26,14 +27,19 @@ export default {
   },
 
   mutations: {
-    [MERGE](state, { data, schema }) {
+    [MERGE](state, { data, schema, name }) {
       const { entities } = normalize({
         [name]: data,
       }, {
         [name]: isArray(data) ? [schema] : schema,
       });
 
-      assign(state, defaultsDeep(entities, state));
+      each(entities, (data, key) => {
+        Vue.set(state, key, {
+          ...get(state, key, {}),
+          ...data,
+        });
+      });
     },
 
     [DELETE](state, { entity, id }) {
