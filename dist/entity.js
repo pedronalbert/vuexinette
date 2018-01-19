@@ -8,6 +8,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = Entity;
 
+var _vue = require('vue');
+
+var _vue2 = _interopRequireDefault(_vue);
+
 var _normalizr = require('normalizr');
 
 var _lodash = require('lodash');

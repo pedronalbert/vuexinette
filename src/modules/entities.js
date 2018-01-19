@@ -1,11 +1,10 @@
-import Vue from 'vue';
+import Vue from '../Vue';
 import { get, isArray, defaultsDeep, assign, each } from 'lodash';
 import { denormalize, normalize } from 'normalizr';
 
 export const MERGE = 'MERGE';
 export const DELETE = 'DELETE';
-export const ADD_NESTED_RESOURCE = 'ADD_NESTED_RESOURCE';
-export const REMOVE_NESTED_RESOURCE = 'REMOVE_NESTED_RESOURCE';
+export const ADD_RELATION_ID = 'ADD_RELATION_ID';
 
 export default {
   namespaced: true,
@@ -52,6 +51,16 @@ export default {
           },
         },
       });
+    },
+
+    [ADD_RELATION_ID](state, { path, id, type = 'push' }) {
+      let newRelations = id;
+
+      const relation = get(state, path);
+
+      if (isArray(relation)) newRelations = (type === 'push') ? relation.push(id) : relation.unshift(id);
+
+      Vue.set(state, path, newRelations)
     },
   },
 };
