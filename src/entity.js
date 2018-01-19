@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { schema } from 'normalizr';
 import { pick, compact, defaults, isArray, each } from 'lodash';
 import client from './client';

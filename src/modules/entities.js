@@ -1,4 +1,4 @@
-import Vue from '../Vue';
+import Vue from 'vue';
 import { get, isArray, defaultsDeep, assign, each } from 'lodash';
 import { denormalize, normalize } from 'normalizr';
 
