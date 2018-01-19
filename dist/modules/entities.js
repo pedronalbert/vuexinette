@@ -9,9 +9,9 @@ var _mutations;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _Vue = require('../Vue');
+var _vue = require('vue');
 
-var _Vue2 = _interopRequireDefault(_Vue);
+var _vue2 = _interopRequireDefault(_vue);
 
 var _lodash = require('lodash');
 
@@ -53,7 +53,7 @@ exports.default = {
         entities = _normalize.entities;
 
     (0, _lodash.each)(entities, function (data, key) {
-      _Vue2.default.set(state, key, _extends({}, (0, _lodash.get)(state, key, {}), data));
+      _vue2.default.set(state, key, _extends({}, (0, _lodash.get)(state, key, {}), data));
     });
   }), _defineProperty(_mutations, DELETE, function (state, _ref2) {
     var entity = _ref2.entity,
@@ -67,15 +67,12 @@ exports.default = {
   }), _defineProperty(_mutations, ADD_RELATION_ID, function (state, _ref3) {
     var path = _ref3.path,
         id = _ref3.id,
-        _ref3$type = _ref3.type,
-        type = _ref3$type === undefined ? 'push' : _ref3$type;
-
-    var newRelations = id;
+        _ref3$method = _ref3.method,
+        method = _ref3$method === undefined ? 'push' : _ref3$method;
 
     var relation = (0, _lodash.get)(state, path);
+    var newRelation = (0, _lodash.isArray)(relation) ? relation.slice()[method](id) : id;
 
-    if ((0, _lodash.isArray)(relation)) newRelations = type === 'push' ? relation.push(id) : relation.unshift(id);
-
-    _Vue2.default.set(state, path, newRelations);
+    (0, _lodash.set)(state, path, newRelation);
   }), _mutations)
 };

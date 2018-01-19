@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { get, isArray, defaultsDeep, assign, each } from 'lodash';
+import { set, get, isArray, defaultsDeep, assign, each } from 'lodash';
 import { denormalize, normalize } from 'normalizr';
 
 export const MERGE = 'MERGE';
@@ -53,14 +53,11 @@ export default {
       });
     },
 
-    [ADD_RELATION_ID](state, { path, id, type = 'push' }) {
-      let newRelations = id;
-
+    [ADD_RELATION_ID](state, { path, id, method = 'push' }) {
       const relation = get(state, path);
+      const newRelation = isArray(relation) ? relation.slice()[method](id) : id;
 
-      if (isArray(relation)) newRelations = (type === 'push') ? relation.push(id) : relation.unshift(id);
-
-      Vue.set(state, path, newRelations)
+      set(state, path, newRelation);
     },
   },
 };
