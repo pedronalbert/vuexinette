@@ -20,7 +20,7 @@ var buildActions = function buildActions(_ref) {
       reqOpts = _ref.request,
       afterDelete = _ref.afterDelete;
   return {
-    create: function () {
+    delete: function () {
       var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store, id) {
         var _ref3, data;
 
@@ -60,11 +60,11 @@ var buildActions = function buildActions(_ref) {
         }, _callee, this, [[0, 8]]);
       }));
 
-      function create(_x, _x2) {
+      function _delete(_x, _x2) {
         return _ref2.apply(this, arguments);
       }
 
-      return create;
+      return _delete;
     }()
   };
 };
