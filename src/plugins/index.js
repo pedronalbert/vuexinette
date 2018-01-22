@@ -4,7 +4,7 @@ import creatable from './creatable';
 import deletable from './deletable';
 import updatable from './updatable';
 
-export { fetchable, fetchableList, creatable, updatable };
+export { fetchable, fetchableList, creatable, updatable, deletable };
 
 export default {
   fetchable,

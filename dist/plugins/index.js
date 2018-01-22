@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updatable = exports.creatable = exports.fetchableList = exports.fetchable = undefined;
+exports.deletable = exports.updatable = exports.creatable = exports.fetchableList = exports.fetchable = undefined;
 
 var _fetchable = require('./fetchable');
 
@@ -31,6 +31,7 @@ exports.fetchable = _fetchable2.default;
 exports.fetchableList = _fetchableList2.default;
 exports.creatable = _creatable2.default;
 exports.updatable = _updatable2.default;
+exports.deletable = _deletable2.default;
 exports.default = {
   fetchable: _fetchable2.default,
   fetchableList: _fetchableList2.default,
