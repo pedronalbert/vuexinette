@@ -1,10 +1,11 @@
 import Vue from 'vue';
-import { set, get, isArray, defaultsDeep, assign, each } from 'lodash';
+import { get, isArray, defaultsDeep, assign, each } from 'lodash';
 import { denormalize, normalize } from 'normalizr';
 
 export const MERGE = 'MERGE';
 export const DELETE = 'DELETE';
 export const ADD_RELATION_ID = 'ADD_RELATION_ID';
+export const DELETE_RELATION_ID = 'ADD_RELATION_ID';
 
 export default {
   namespaced: true,
@@ -54,10 +55,22 @@ export default {
     },
 
     [ADD_RELATION_ID](state, { path, id, method = 'push' }) {
-      const relation = get(state, path);
-      const newRelation = isArray(relation) ? relation.slice()[method](id) : id;
+      let relation = get(state, path);
 
-      set(state, path, newRelation);
+      if (isArray(relation)) relation[method](id);
+      else relation = id;
+    },
+
+    [DELETE_RELATION_ID](state, { path, id }) {
+      let relation = get(state, path);
+
+      if(isArray(relation)) {
+        const relationIndex = relation.indexOf(id);
+
+        if (relationIndex >= 0) relation.splice(relationIndex, 1);
+      } else {
+        relation = null;
+      }
     },
   },
 };

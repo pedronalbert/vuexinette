@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ADD_RELATION_ID = exports.DELETE = exports.MERGE = undefined;
+exports.DELETE_RELATION_ID = exports.ADD_RELATION_ID = exports.DELETE = exports.MERGE = undefined;
 
 var _mutations;
 
@@ -24,6 +24,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 var MERGE = exports.MERGE = 'MERGE';
 var DELETE = exports.DELETE = 'DELETE';
 var ADD_RELATION_ID = exports.ADD_RELATION_ID = 'ADD_RELATION_ID';
+var DELETE_RELATION_ID = exports.DELETE_RELATION_ID = 'ADD_RELATION_ID';
 
 exports.default = {
   namespaced: true,
@@ -71,8 +72,20 @@ exports.default = {
         method = _ref3$method === undefined ? 'push' : _ref3$method;
 
     var relation = (0, _lodash.get)(state, path);
-    var newRelation = (0, _lodash.isArray)(relation) ? relation.slice()[method](id) : id;
 
-    (0, _lodash.set)(state, path, newRelation);
+    if ((0, _lodash.isArray)(relation)) relation[method](id);else relation = id;
+  }), _defineProperty(_mutations, DELETE_RELATION_ID, function (state, _ref4) {
+    var path = _ref4.path,
+        id = _ref4.id;
+
+    var relation = (0, _lodash.get)(state, path);
+
+    if ((0, _lodash.isArray)(relation)) {
+      var relationIndex = relation.indexOf(id);
+
+      if (relationIndex >= 0) relation.splice(relationIndex, 1);
+    } else {
+      relation = null;
+    }
   }), _mutations)
 };
