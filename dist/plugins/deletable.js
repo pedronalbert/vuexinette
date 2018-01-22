@@ -21,8 +21,10 @@ var buildActions = function buildActions(_ref) {
       afterDelete = _ref.afterDelete;
   return {
     delete: function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store, id) {
-        var _ref3, data;
+      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(store, _ref2) {
+        var id = _ref2.id;
+
+        var _ref4, data;
 
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
@@ -33,8 +35,8 @@ var buildActions = function buildActions(_ref) {
                 return entity.api.delete(id, _extends({}, reqOpts));
 
               case 3:
-                _ref3 = _context.sent;
-                data = _ref3.data;
+                _ref4 = _context.sent;
+                data = _ref4.data;
 
 
                 if (afterDelete) afterDelete(store, { id: id });
@@ -61,7 +63,7 @@ var buildActions = function buildActions(_ref) {
       }));
 
       function _delete(_x, _x2) {
-        return _ref2.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       }
 
       return _delete;

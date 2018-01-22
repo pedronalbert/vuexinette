@@ -9,7 +9,7 @@ const buildActions = ({
   request: reqOpts,
   afterDelete,
 }) => ({
-  async delete(store, id) {
+  async delete(store, { id }) {
     try {
       const { data } = await entity.api.delete(id, {
         ...reqOpts,
